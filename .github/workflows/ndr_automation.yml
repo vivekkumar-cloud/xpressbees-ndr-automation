@@ -25,6 +25,9 @@ jobs:
         uses: browser-actions/setup-chrome@v1
 
       - name: Run NDR Automation
+        env:
+          XB_EMAIL: ${{ secrets.XB_EMAIL }}
+          XB_PASSWORD: ${{ secrets.XB_PASSWORD }}
         run: python ndr_automation.py
 
       - name: Upload logs and screenshots

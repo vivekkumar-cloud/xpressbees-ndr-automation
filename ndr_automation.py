@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 import time
 import logging
+import os
 from datetime import datetime
 
 # ─── Logging Setup ───────────────────────────────────────────────────────────
@@ -18,9 +19,12 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ─── Credentials ─────────────────────────────────────────────────────────────
-EMAIL    = "Exyte124@gmail.com"
-PASSWORD = "Tank123@2025"
+# ─── Credentials from Environment Variables (GitHub Secrets) ─────────────────
+EMAIL    = os.environ.get("XB_EMAIL")
+PASSWORD = os.environ.get("XB_PASSWORD")
+
+if not EMAIL or not PASSWORD:
+    raise Exception("❌ XB_EMAIL or XB_PASSWORD environment variable not set!")
 
 # ─── URLs ────────────────────────────────────────────────────────────────────
 LOGIN_URL = "https://ship.xpressbees.com/users"
@@ -56,14 +60,12 @@ def login(driver, wait):
     log.info(f"Page title: {driver.title}")
     take_screenshot(driver, "01_login_page")
 
-    # Enter email
     email_field = wait.until(EC.presence_of_element_located((By.NAME, "email")))
     email_field.clear()
     email_field.send_keys(EMAIL)
     log.info("Email entered.")
     time.sleep(1)
 
-    # Enter password
     password_field = driver.find_element(By.NAME, "password")
     password_field.clear()
     password_field.send_keys(PASSWORD)
@@ -72,17 +74,14 @@ def login(driver, wait):
 
     take_screenshot(driver, "02_filled_form")
 
-    # Click Login button
     login_btn = driver.find_element(By.XPATH, "//button[contains(text(),'Login')]")
     login_btn.click()
     log.info("Login button clicked. Waiting for redirect...")
     time.sleep(5)
 
     log.info(f"URL after login click: {driver.current_url}")
-    log.info(f"Page title after login: {driver.title}")
     take_screenshot(driver, "03_after_login_click")
 
-    # Wait up to 30s for any redirect away from /users
     for i in range(30):
         current = driver.current_url
         log.info(f"  [{i+1}s] Current URL: {current}")
@@ -95,10 +94,9 @@ def login(driver, wait):
     log.info(f"Final URL: {driver.current_url}")
 
     if "/users" in driver.current_url:
-        # Check for error messages on page
         try:
             page_text = driver.find_element(By.TAG_NAME, "body").text
-            log.info(f"Page body text snippet: {page_text[:500]}")
+            log.info(f"Page body snippet: {page_text[:500]}")
         except:
             pass
         raise Exception("Login failed - still on login page after 30 seconds")
@@ -189,6 +187,7 @@ def submit_reattempt(driver, wait):
 def main():
     log.info("=" * 60)
     log.info(f"Xpressbees NDR Automation Started at {datetime.now()}")
+    log.info(f"Running as: {EMAIL}")
     log.info("=" * 60)
 
     driver = get_driver()
