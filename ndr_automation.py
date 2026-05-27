@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 
 # ─── Credentials ─────────────────────────────────────────────────────────────
 EMAIL    = "Exyte124@gmail.com"
-PASSWORD = "Noida2024@pax"
+PASSWORD = "Tank123@2025"
 
 # ─── URLs ────────────────────────────────────────────────────────────────────
 LOGIN_URL = "https://ship.xpressbees.com/users"
