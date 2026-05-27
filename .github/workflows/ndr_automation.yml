@@ -1,0 +1,35 @@
+name: Xpressbees NDR Automation
+
+on:
+  schedule:
+    - cron: '30 15 * * *'  # 9:00 PM IST = 3:30 PM UTC, runs daily
+  workflow_dispatch:        # Also allows manual trigger from GitHub UI
+
+jobs:
+  run-ndr-automation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Run NDR Automation
+        run: python ndr_automation.py
+
+      - name: Upload log file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ndr-log-${{ github.run_number }}
+          path: ndr_automation.log

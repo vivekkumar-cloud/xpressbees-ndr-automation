@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Xpressbees NDR Automation 🚀
 
 Automates the NDR (Non-Delivery Report) Re-Attempt push on the Xpressbees shipping panel.
@@ -26,3 +27,7 @@ python ndr_automation.py
 
 ## Logs
 All activity is logged to `ndr_automation.log` in the same folder.
+=======
+# xpressbees-ndr-automation
+Automated NDR re-attempt pusher for Xpressbees panel
+>>>>>>> e96c5d42322e734b30d3bf8c6ad660881b003b9d
